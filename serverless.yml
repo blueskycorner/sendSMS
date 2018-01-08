@@ -19,11 +19,13 @@ service: sendSMS
 
 provider:
   name: aws
-  runtime: python2.7
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  runtime: python3.6
+  stage: dev
+  region: eu-west-1
+  profile: PERSO
+  
+custom:
+  schedule: cron(*/5 * * * *)
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -56,17 +58,24 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
-
+    handler: handler.sendSms
+    environment:
+      TWILIO_ACCOUNT_SID: AC21797a59cbb89491633cb7ba47e696f8
+      TWILIO_AUTH_TOKEN: 56adb34864f483a09fd5e6c847768da4
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
-#    events:
+    events:
 #      - http:
 #          path: users/create
 #          method: get
 #      - s3: ${env:BUCKET}
-#      - schedule: rate(10 minutes)
+      - schedule: 
+          rate: cron(*/5 * * * ? *)
+          input:
+            To: '+33620397861'
+            From: '+441384686330'
+            Body: 'N oublie pas la Gym !!!'
 #      - sns: greeter-topic
 #      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
 #      - alexaSkill
